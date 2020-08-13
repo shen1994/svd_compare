@@ -83,9 +83,11 @@ void cudaSVD::malloc_space(uint16_t m, uint16_t n)
 	CUDA_CHECK_RETURN(cudaMalloc((void**)&dev_work, lwork * sizeof(float)));
 }
 
-void cudaSVD::set_matrix(float *matrix)
+void cudaSVD::set_matrix(float *matrix, uint16_t num)
 {
 	host_A = matrix;
+	n_ = num;
+	lda = std::min(m_, n_);
 }
 
 void cudaSVD::core_compute()
@@ -98,12 +100,12 @@ void cudaSVD::core_compute()
 	cudaDeviceSynchronize();
 
 	CUDA_CHECK_RETURN(cudaMemcpy(host_U, dev_U, m_ * lda * sizeof(float), cudaMemcpyDeviceToHost));
-	CUDA_CHECK_RETURN(cudaMemcpy(host_V, dev_V, n_ * lda * sizeof(float), cudaMemcpyDeviceToHost));
-	CUDA_CHECK_RETURN(cudaMemcpy(host_S, dev_S, lda * sizeof(float), cudaMemcpyDeviceToHost));
-	CUDA_CHECK_RETURN(cudaMemcpy(&host_info, dev_info, sizeof(int), cudaMemcpyDeviceToHost));
+	//CUDA_CHECK_RETURN(cudaMemcpy(host_V, dev_V, n_ * lda * sizeof(float), cudaMemcpyDeviceToHost));
+	//CUDA_CHECK_RETURN(cudaMemcpy(host_S, dev_S, lda * sizeof(float), cudaMemcpyDeviceToHost));
+	//CUDA_CHECK_RETURN(cudaMemcpy(&host_info, dev_info, sizeof(int), cudaMemcpyDeviceToHost));
 	cudaDeviceSynchronize();
 
-	if (0 == host_info) printf("gesvdj converges \n");
-	else if(0 > host_info) printf("%d-th parameter is wrong \n", -host_info);
-	else printf("WARNING: info = %d : gesvdj does not converge \n", host_info);
+	//if (0 == host_info) printf("gesvdj converges \n");
+	//else if(0 > host_info) printf("%d-th parameter is wrong \n", -host_info);
+	//else printf("WARNING: info = %d : gesvdj does not converge \n", host_info);
 }

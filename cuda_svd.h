@@ -26,7 +26,7 @@ public:
 	cudaSVD();
 	~cudaSVD();
 	void malloc_space(uint16_t m, uint16_t n); // matrix m * n	
-	void set_matrix(float *matrix);
+	void set_matrix(float *matrix, uint16_t num);
 	void core_compute();
 	float *get_host_u() { return host_U; }
 
